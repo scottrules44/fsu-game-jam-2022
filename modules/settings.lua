@@ -7,5 +7,7 @@ m.debug = true
 
 m.title = "Water Drop"
 
+m.assetsDir = "assets/" 
+
 
 return m
