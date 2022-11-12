@@ -1,8 +1,8 @@
---
+--This is main menu
 
 local composer = require( "composer" )
 local colors = require "modules.colors"
-
+local settings = require "modules.settings"
 ---
 local scene = composer.newScene()
 
@@ -27,11 +27,25 @@ function scene:create( event )
     local bg = display.newRect(sceneGroup,  display.contentCenterX, display.contentCenterY, display.actualContentWidth,display.actualContentHeight )
     colors.setFillColor(bg, colors.sky)
 
-    local title = display.newText(sceneGroup, "Water Drop", display.contentCenterX, 40, native.systemFontBold, 30)
+    local title = display.newText(sceneGroup, settings.title, display.contentCenterX, 40, native.systemFontBold, 40)
     colors.setFillColor(title, colors.title)
     --play button
     local playButton = display.newGroup()
-    local playBg = display.newRect( display.contentCenterX, display.contentCenterY, 200, 50 )
+    sceneGroup:insert(playButton)
+    local playBg = display.newRoundedRect( display.contentCenterX, display.contentCenterY, 200, 50, 20 )
+    local playTxt = display.newText( "Play", playBg.x, playBg.y, native.systemFont, 20)
+    colors.setFillColor(playTxt, colors.title)
+
+    playBg:addEventListener("touch", function(e)
+      local self = e.target
+
+      if(e.phase == "began")then
+        self.alpha = .3
+      elseif(e.phase == "ended")then
+        composer.gotoScene( "scenes.gameScene", "fade" )
+        self.alpha = 1
+      end
+    end)
     --about text
 
 

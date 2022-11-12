@@ -10,8 +10,10 @@ end
 Color 0-1, rgba
 ]]--
 
---Sky BG
+--Sky BG (might replace with image)
 m.sky = {188/255,200/255,198/255,1}
+
+m.gameSky = {11/255,75/255,230/255,1}
 
 --title
 

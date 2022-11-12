@@ -1,8 +1,11 @@
---
+--This is where the game lives
 
 local composer = require( "composer" )
 
 local scene = composer.newScene()
+local colors = require "modules.colors"
+local game = require "modules.game"
+
 
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -20,8 +23,9 @@ local scene = composer.newScene()
 function scene:create( event )
 
     local sceneGroup = self.view
-    local bg = display.newRect( display.contentCenterX, display.contentCenterY, display.actualContentWidth , display.actualContentHeight )
-    
+
+    game.start(sceneGroup)
+
 
 end
 
