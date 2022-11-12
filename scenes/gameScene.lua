@@ -1,9 +1,7 @@
 --
 
 local composer = require( "composer" )
-local colors = require "modules.colors"
 
----
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -22,29 +20,9 @@ local scene = composer.newScene()
 function scene:create( event )
 
     local sceneGroup = self.view
+    local bg = display.newRect( display.contentCenterX, display.contentCenterY, display.actualContentWidth , display.actualContentHeight )
+    
 
-    --menu
-    local bg = display.newRect(sceneGroup,  display.contentCenterX, display.contentCenterY, display.actualContentWidth,display.actualContentHeight )
-    colors.setFillColor(bg, colors.sky)
-
-    local title = display.newText(sceneGroup, "Water Drop", display.contentCenterX, 40, native.systemFontBold, 30)
-    colors.setFillColor(title, colors.title)
-    --play button
-    local playButton = display.newGroup()
-    local playBg = display.newRect( display.contentCenterX, display.contentCenterY, 200, 50 )
-    --about text
-
-
-
-
-    --toDo remove on destoy or hide?
-    -- Called when the app's view has been resized
-    local function onResize( event )
-
-    end
-
-
-    Runtime:addEventListener( "resize", onResize )
 end
 
 
