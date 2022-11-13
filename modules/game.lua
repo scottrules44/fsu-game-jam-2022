@@ -85,11 +85,15 @@ m.start = function (scene)
   colors.setFillColor(drop, colors.drop)
   --obstacles
   local obstacle_height = 30
-  local leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
-  leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
-  leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
-
-
+  local function spawnLeaf()
+    leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
+    leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
+    leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
+  end
+ 
+-- Wrap "spawnLeaf" and "randomPosition" inside a closure
+local myClosure = function() return spawnLeaf() end
+timer.performWithDelay(2000, myClosure, 200)
 
 
 
