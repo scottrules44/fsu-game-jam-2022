@@ -35,6 +35,9 @@ function scene:create( event )
     local playBg = display.newRoundedRect( display.contentCenterX, display.contentCenterY, 200, 50, 20 )
     local playTxt = display.newText( "Play", playBg.x, playBg.y, native.systemFont, 20)
     colors.setFillColor(playTxt, colors.title)
+    --high score
+    local highScoreDisplay = display.newText("High Score: " .. tostring(settings.highScore), playBg.x, playBg.y + 100, native.systemFont, 20)
+    colors.setFillColor(highScoreDisplay, colors.title)
 
     playBg:addEventListener("touch", function(e)
       local self = e.target
