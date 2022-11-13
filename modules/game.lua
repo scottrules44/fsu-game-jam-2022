@@ -50,6 +50,8 @@ Runtime:addEventListener( "key", onKeyEvent )
 m.start = function (scene)
   --physics
   physics.start()
+  physics.setGravity( 0, 0 )
+
   --pre declare
   math.randomseed( os.time() )
   local regBg = display.newGroup()
@@ -72,9 +74,10 @@ m.start = function (scene)
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
   scene:insert(borderGroup)
-  local leftBorder = display.newRect(borderGroup, 0, display.contentCenterY, 5, display.contentHeight )
-  local rightBorder = display.newRect(borderGroup, display.contentWidth, display.contentCenterY, 5, display.contentHeight )
-
+  local leftBorder = display.newRect(borderGroup, 0-20, display.contentCenterY, 50, display.contentHeight )
+  physics.addBody( leftBorder, "static" )
+  local rightBorder = display.newRect(borderGroup, display.contentWidth+20, display.contentCenterY, 50, display.contentHeight )
+  physics.addBody( rightBorder, "static" )
   if settings.debug == false then
     borderGroup.alpha = 0
   end
@@ -88,14 +91,13 @@ m.start = function (scene)
   local dropScaler = .5
   local dropVerts = {25*dropScaler,0*dropScaler, 10*dropScaler,30*dropScaler, 15*dropScaler,40*dropScaler, 25*dropScaler,50*dropScaler, 35*dropScaler,40*dropScaler, 40*dropScaler,30*dropScaler }
   drop = display.newPolygon( scene,cloud.x, cloud.y, dropVerts ) -- this should be changed to image
-  physics.addBody( drop, "static" )
+  physics.addBody( drop, "dynamic" )
   colors.setFillColor(drop, colors.drop)
   --obstacles
   local obstacle_height = 30
   local function spawnLeaf()
-    leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
+    leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 60, 40) --no idea what these parameters are lol
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
-    leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
     startMovingLeaf(leaf)
   end
 
