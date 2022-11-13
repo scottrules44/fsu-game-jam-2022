@@ -51,6 +51,7 @@ m.start = function (scene)
   --physics
   physics.start()
   --pre declare
+  math.randomseed( os.time() )
   local movingBg = display.newGroup()
   local function startMovingBg ()
     gameTimer = timer.performWithDelay( 10, function (args)
@@ -85,7 +86,7 @@ m.start = function (scene)
   --obstacles
   local obstacle_height = 30
   local leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
-  leaf.x, leaf.y = 200, display.actualContentHeight
+  leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
   leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
 
 
