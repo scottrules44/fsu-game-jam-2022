@@ -8,24 +8,32 @@ local m ={}
 local gameTimer
 local drop
 local dropMoveTimer
-
+local scoreTimer
 --reset game here
 
 --pause game here
 
 --handle input
+local moveTimer
 local function startDropMove(type)
   local moveAmount
   if(type == "left")then
-    moveAmount = -20
+    moveAmount = -3
   elseif(type == "right")then
-    moveAmount = 20
+    moveAmount = 3
   end
-  drop.x = drop.x + moveAmount
+  if(moveTimer == nil)then
+    moveTimer = timer.performWithDelay( 10,function  ()
+      drop.x = drop.x + moveAmount
+    end ,-1 )
+  end
+
+
 
 end
 local function stopDropMove(type)
-
+  timer.cancel( moveTimer )
+  moveTimer = nil
 end
 local function onKeyEvent( event )
 
@@ -47,6 +55,9 @@ end
 -- Add the key event listener
 Runtime:addEventListener( "key", onKeyEvent )
 
+
+
+
 m.start = function (scene)
   --physics
   physics.start()
@@ -55,25 +66,18 @@ m.start = function (scene)
   --pre declare
   math.randomseed( os.time() )
   local regBg = display.newGroup()
-  local movingBg = display.newGroup()
-  local function startMovingBg ()
-    --[[gameTimer = timer.performWithDelay( 10, function (args)
-      movingBg.y = movingBg.y-1
-    end, -1 )]]--
-  end
-  local function startMovingLeaf(leaf)
-    gameTimer = timer.performWithDelay(1, function (args)
-        leaf.y = leaf.y-3
-    end, -1 )
-  end
+
   --create bg -toDo make more complex
   scene:insert(regBg)
-  scene:insert(movingBg)
   local bg = display.newRect(regBg, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight )
   colors.setFillColor(bg, colors.gameSky)
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
   scene:insert(borderGroup)
+  local topBorder = display.newRect(borderGroup, display.contentCenterX, -20, display.contentWidth, 20 )
+  physics.addBody( topBorder, "static" )
+  topBorder.isSensor = true
+  topBorder.name = "topBorder"
   local leftBorder = display.newRect(borderGroup, 0-20, display.contentCenterY, 50, display.contentHeight )
   physics.addBody( leftBorder, "static" )
   local rightBorder = display.newRect(borderGroup, display.contentWidth+20, display.contentCenterY, 50, display.contentHeight )
@@ -86,34 +90,61 @@ m.start = function (scene)
   local cloud = display.newImageRect(settings.assetsDir.."cloud1.png", 128, 71)
   cloud.x, cloud.y = display.contentCenterX, 40
   cloud.xOrg, cloud.yOrg = cloud.x, cloud.y
-  transition.to(cloud, {time=2000, y=-50, alpha=0, onComplete=startMovingBg  })
+
   --water drop
   local dropScaler = .5
   local dropVerts = {25*dropScaler,0*dropScaler, 10*dropScaler,30*dropScaler, 15*dropScaler,40*dropScaler, 25*dropScaler,50*dropScaler, 35*dropScaler,40*dropScaler, 40*dropScaler,30*dropScaler }
   drop = display.newPolygon( scene,cloud.x, cloud.y, dropVerts ) -- this should be changed to image
   physics.addBody( drop, "dynamic" )
   colors.setFillColor(drop, colors.drop)
+  drop.name = "drop"
+  drop.collision = function (self, event)
+    if event.other.name == "topBorder" then
+        if ( event.phase == "began" ) then
+          timer.cancel( scoreTimer )
+          timer.cancel( leafTimer )
+          timer.cancel( gameTimer )
+        end
+    end
+  end
+  drop:addEventListener( "collision" )
   --obstacles
-  local obstacle_height = 30
+  local obstacleDG = display.newGroup()
   local function spawnLeaf()
-    leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 60, 40) --no idea what these parameters are lol
+    leaf = display.newImageRect(obstacleDG, settings.assetsDir.."leaf1.png", 60, 40) --no idea what these parameters are lol
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
-    startMovingLeaf(leaf)
+    leaf.name = "obstacle"
+    physics.addBody( leaf, "static" )
+
   end
 
-  leafTimer = timer.performWithDelay(500, spawnLeaf, -1)
+  --start up game
+  local function startGame(leaf)
+    leafTimer = timer.performWithDelay(500, spawnLeaf, -1)
+    gameTimer = timer.performWithDelay(1, function (args)
+      for i=1,obstacleDG.numChildren do
+        local obstacle = obstacleDG[i]
+        if(obstacle and obstacle.y < -40)then -- clean up obstacle
+          display.remove(obstacle)
 
-    --score
-    local score = 0
-    scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
-    local function scoreUpdate( event )
-        score = score + 1
-        scoreDisplay.text = "Score: " .. tostring(score)
-    end
-
-    local scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
+        elseif(obstacle)then
+          obstacle.y = obstacle.y-3
+        end
+      end
 
 
+    end, -1 )
+  end
+  transition.to(cloud, {time=2000, y=-50, alpha=0, onComplete=startGame  })
+  --score
+     local score = 0
+     scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
+     local function scoreUpdate( event )
+         score = score + 1
+         scoreDisplay.text = "Score: " .. tostring(score)
+     end
+
+     scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
 
 end
 
