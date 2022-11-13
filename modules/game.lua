@@ -9,8 +9,6 @@ local gameTimer
 local drop
 local dropMoveTimer
 local scoreTimer
---reset game here
-
 --pause game here
 
 --handle input
@@ -64,11 +62,14 @@ m.start = function (scene)
   physics.setGravity( 0, 0 )
 
   --pre declare
+  local waterSound = audio.loadSound( settings.assetsDir.."bloop.mp3" )
   math.randomseed( os.time() )
+  local obstacleDG = display.newGroup()
+  local startGame
+  local resetGame
   local regBg = display.newGroup()
-
-  --create bg -toDo make more complex
   scene:insert(regBg)
+  scene:insert(obstacleDG)
   local bg = display.newImageRect(regBg, settings.assetsDir.."skybackground.png", display.actualContentWidth, display.actualContentHeight )
   bg.x, bg.y = display.contentCenterX, display.contentCenterY
   bg.xOrg, bg.yOrg = bg.x, bg.y
@@ -76,7 +77,7 @@ m.start = function (scene)
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
   scene:insert(borderGroup)
-  local topBorder = display.newRect(borderGroup, display.contentCenterX, -40, display.contentWidth, 20 )
+  local topBorder = display.newRect(borderGroup, display.contentCenterX, -25, display.contentWidth, 20 )
   physics.addBody( topBorder, "static" )
   topBorder.isSensor = true
   topBorder.name = "topBorder"
@@ -88,13 +89,26 @@ m.start = function (scene)
     borderGroup.alpha = 0
   end
   local score = 0
-  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX + 35, display.contentCenterY - 120, 100, 100)
+  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX + 35, 50, 100, 100)
   scoreDisplay.alpha = 0
   local function scoreUpdate( event )
       score = score + 1
       scoreDisplay.text = "Score: " .. tostring(score)
   end
   --game over screen
+  local gameOver = display.newGroup()
+  scene:insert(gameOver)
+
+  local gameOverBg = display.newRoundedRect(gameOver ,display.contentCenterX, display.contentCenterY, 400, 200, 20 )
+  gameOverBg:setFillColor(.5)
+  gameOverBg.alpha = .8
+  gameOver.alpha = 0
+  local gameOverTxt = display.newText(gameOver, "Game Over", display.contentCenterX, display.contentCenterY-50, native.systemFonBold, 30 )
+  local highScore = display.newText( gameOver, "High Score: " .. tostring(settings.highScore), display.contentCenterX, display.contentCenterY, native.systemFontBold, 25 )
+  local finalScore = display.newText( gameOver, "Final Score: " .. tostring(score), display.contentCenterX, display.contentCenterY+30, native.systemFontBold, 20 )
+  local resetButton = display.newGroup()
+  gameOver:insert(resetButton)
+  local resetTxt = display.newText(resetButton, "Reset", display.contentCenterX, display.contentCenterY+80, native.systemFont, 18 )
 
   --start clouds
   local cloud = display.newImageRect(settings.assetsDir.."cloud1.png", 128, 71)
@@ -105,12 +119,23 @@ m.start = function (scene)
   local dropScaler = .5
   local dropVerts = {25*dropScaler,0*dropScaler, 10*dropScaler,30*dropScaler, 15*dropScaler,40*dropScaler, 25*dropScaler,50*dropScaler, 35*dropScaler,40*dropScaler, 40*dropScaler,30*dropScaler }
   drop = display.newPolygon( scene,cloud.x, cloud.y, dropVerts ) -- this should be changed to image
+  drop.xOrg, drop.yOrg = drop.x, drop.y
   physics.addBody( drop, "dynamic" )
   colors.setFillColor(drop, colors.drop)
   drop.name = "drop"
   drop.collision = function (self, event)
+    if ( event.phase == "began" ) then
+      audio.play( waterSound )
+    end
     if event.other.name == "topBorder" then
         if ( event.phase == "began" ) then
+          gameOver.alpha = 1
+          finalScore.text = "Final Score: " .. tostring(score)
+          if(score> settings.highScore)then
+            settings.highScore = score
+            system.setPreferences( "app", {highScore = score} )
+          end
+          highScore.text = "High Score: " .. tostring(settings.highScore)
           timer.cancel( scoreTimer )
           timer.cancel( leafTimer )
           timer.cancel( gameTimer )
@@ -120,7 +145,6 @@ m.start = function (scene)
   end
   drop:addEventListener( "collision" )
   --obstacles
-  local obstacleDG = display.newGroup()
   local function spawnLeaf()
     leaf = display.newImageRect(obstacleDG, settings.assetsDir.."leaf1.png", 60, 40) --no idea what these parameters are lol
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
@@ -130,7 +154,7 @@ m.start = function (scene)
   end
 
   --start up game
-  local function startGame(leaf)
+  function startGame()
     Runtime:addEventListener( "key", onKeyEvent )
     scoreDisplay.alpha = 1
     scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
@@ -149,9 +173,22 @@ m.start = function (scene)
 
     end, -1 )
   end
-  transition.to(cloud, {time=2000, y=-50, alpha=0, onComplete=startGame  })
-
-
+  timer.performWithDelay( 2000, function  ()
+    transition.to(cloud, {time=1500, y=-50, alpha=0, onComplete=startGame  })
+  end )
+  --reset game
+  local function resetGame ()
+    display.remove(obstacleDG)
+    obstacleDG = display.newGroup()
+    scene:insert(obstacleDG)
+    gameOver:toFront()
+    score = 0
+    gameOver.alpha = 0
+    drop.x, drop.y = drop.xOrg, drop.yOrg
+    drop.rotation = 0
+    startGame()
+  end
+  resetTxt:addEventListener("tap", resetGame)
 end
 
 

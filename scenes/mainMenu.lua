@@ -33,12 +33,9 @@ function scene:create( event )
     --play button
     local playButton = display.newGroup()
     sceneGroup:insert(playButton)
-    local playBg = display.newRoundedRect( display.contentCenterX, display.contentCenterY, 200, 50, 20 )
-    local playTxt = display.newText( "Play", playBg.x, playBg.y, native.systemFont, 20)
+    local playBg = display.newRoundedRect(playButton, display.contentCenterX, display.contentCenterY, 200, 50, 20 )
+    local playTxt = display.newText(playButton, "Play", playBg.x, playBg.y, native.systemFont, 20)
     colors.setFillColor(playTxt, colors.title)
-    --high score
-    local highScoreDisplay = display.newText("High Score: " .. tostring(settings.highScore), playBg.x, playBg.y + 100, native.systemFont, 20)
-    colors.setFillColor(highScoreDisplay, colors.title)
 
     playBg:addEventListener("touch", function(e)
       local self = e.target
@@ -50,19 +47,18 @@ function scene:create( event )
         self.alpha = 1
       end
     end)
+    --high score
+    local highScoreDisplay = display.newText(sceneGroup, "High Score: " .. tostring(settings.highScore), playBg.x, playBg.y -50, native.systemFont, 20)
+    colors.setFillColor(highScoreDisplay, colors.title)
+    --how to play
+    local howToPlay1 = display.newText(sceneGroup, "How to play:", display.contentCenterX, display.actualContentHeight-70, native.systemFontBold, 14)
+    local howToPlay2 = display.newText(sceneGroup, "Use left and right arrow key to control leaf and avoid leafs", display.contentCenterX, display.actualContentHeight-50, native.systemFontBold, 14)
+    colors.setFillColor(howToPlay1, colors.title)
+    colors.setFillColor(howToPlay2, colors.title)
     --about text
+    local about = display.newText(sceneGroup, "Created for DevLUP 2022 Game Jam (Scott, Sky, Jamie)", display.contentCenterX, display.actualContentHeight-20, native.systemFont, 12)
+    colors.setFillColor(about, colors.title)
 
-
-
-
-    --toDo remove on destoy or hide?
-    -- Called when the app's view has been resized
-    local function onResize( event )
-
-    end
-
-
-    Runtime:addEventListener( "resize", onResize )
 end
 
 
