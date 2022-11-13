@@ -69,8 +69,10 @@ m.start = function (scene)
 
   --create bg -toDo make more complex
   scene:insert(regBg)
-  local bg = display.newRect(regBg, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight )
-  colors.setFillColor(bg, colors.gameSky)
+  local bg = display.newImageRect(regBg, settings.assetsDir.."skybackground.png", display.actualContentWidth, display.actualContentHeight )
+  bg.x, bg.y = display.contentCenterX, display.contentCenterY
+  bg.xOrg, bg.yOrg = bg.x, bg.y
+
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
   scene:insert(borderGroup)
@@ -86,7 +88,7 @@ m.start = function (scene)
     borderGroup.alpha = 0
   end
   local score = 0
-  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
+  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX + 35, display.contentCenterY - 120, 100, 100)
   scoreDisplay.alpha = 0
   local function scoreUpdate( event )
       score = score + 1
