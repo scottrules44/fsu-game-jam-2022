@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\assets",
+    "\\modules",
+    "\\scenes"
   ],
-  "SelectedNode": "\\main.lua",
+  "SelectedNode": "\\assets\\leaf1.png",
   "PreviewInSolutionExplorer": false
 }

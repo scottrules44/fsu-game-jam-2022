@@ -84,8 +84,8 @@ m.start = function (scene)
   colors.setFillColor(drop, colors.drop)
   --obstacles
   local obstacle_height = 30
-  local leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 100, 70)
-  leaf.x, leaf.y = math.random(display.actualContentWidth), math.random(display.actualContentHeight)
+  local leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
+  leaf.x, leaf.y = 200, display.actualContentHeight
   leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
 
 
