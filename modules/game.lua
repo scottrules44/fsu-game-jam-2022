@@ -52,6 +52,7 @@ m.start = function (scene)
   physics.start()
   --pre declare
   math.randomseed( os.time() )
+  local regBg = display.newGroup()
   local movingBg = display.newGroup()
   local function startMovingBg ()
     gameTimer = timer.performWithDelay( 10, function (args)
@@ -59,8 +60,9 @@ m.start = function (scene)
     end, -1 )
   end
   --create bg -toDo make more complex
+  scene:insert(regBg)
   scene:insert(movingBg)
-  local bg = display.newRect(movingBg, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight )
+  local bg = display.newRect(regBg, display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight )
   colors.setFillColor(bg, colors.gameSky)
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
