@@ -82,7 +82,11 @@ m.start = function (scene)
   drop = display.newPolygon( scene,cloud.x, cloud.y, dropVerts ) -- this should be changed to image
   physics.addBody( drop, "static" )
   colors.setFillColor(drop, colors.drop)
-
+  --obstacles
+  local obstacle_height = 30
+  local leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 100, 70)
+  leaf.x, leaf.y = math.random(display.actualContentWidth), math.random(display.actualContentHeight)
+  leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
 
 
 
