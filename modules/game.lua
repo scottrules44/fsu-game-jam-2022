@@ -55,9 +55,9 @@ m.start = function (scene)
   local regBg = display.newGroup()
   local movingBg = display.newGroup()
   local function startMovingBg ()
-    gameTimer = timer.performWithDelay( 10, function (args)
+    --[[gameTimer = timer.performWithDelay( 10, function (args)
       movingBg.y = movingBg.y-1
-    end, -1 )
+    end, -1 )]]--
   end
   --create bg -toDo make more complex
   scene:insert(regBg)
@@ -92,13 +92,9 @@ m.start = function (scene)
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
     leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
   end
- 
--- Wrap "spawnLeaf" and "randomPosition" inside a closure
-local myClosure = function() return spawnLeaf() end
-timer.performWithDelay(2000, myClosure, 200)
 
 
-
+  leafTimer = timer.performWithDelay(2000, spawnLeaf, -1)
 
 
 end
