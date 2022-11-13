@@ -59,6 +59,11 @@ m.start = function (scene)
       movingBg.y = movingBg.y-1
     end, -1 )]]--
   end
+  local function startMovingLeaf(leaf)
+    gameTimer = timer.performWithDelay(1, function (args)
+        leaf.y = leaf.y-3
+    end, -1 )
+  end
   --create bg -toDo make more complex
   scene:insert(regBg)
   scene:insert(movingBg)
@@ -91,10 +96,11 @@ m.start = function (scene)
     leaf = display.newImageRect(movingBg, settings.assetsDir.."leaf1.png", 128, 71) --no idea what these parameters are lol
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
     leaf.xOrg, leaf.yOrg = leaf.x, leaf.y
+    startMovingLeaf(leaf)
   end
 
 
-  leafTimer = timer.performWithDelay(2000, spawnLeaf, -1)
+  leafTimer = timer.performWithDelay(500, spawnLeaf, -1)
 
 
 end
