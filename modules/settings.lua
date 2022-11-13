@@ -7,7 +7,8 @@ m.debug = true
 
 m.title = "Water Drop"
 
-m.assetsDir = "assets/" 
+m.assetsDir = "assets/"
 
+m.highScore = 0 
 
 return m

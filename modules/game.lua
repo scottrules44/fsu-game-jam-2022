@@ -32,8 +32,10 @@ local function startDropMove(type)
 
 end
 local function stopDropMove(type)
-  timer.cancel( moveTimer )
-  moveTimer = nil
+  if(moveTimer)then
+    timer.cancel( moveTimer )
+    moveTimer = nil
+  end
 end
 local function onKeyEvent( event )
 
@@ -52,8 +54,6 @@ local function onKeyEvent( event )
     return false -- we have not handled this key
 end
 
--- Add the key event listener
-Runtime:addEventListener( "key", onKeyEvent )
 
 
 
@@ -74,7 +74,7 @@ m.start = function (scene)
   --borders to what is consider "off screen" (hide during build)
   local borderGroup = display.newGroup()
   scene:insert(borderGroup)
-  local topBorder = display.newRect(borderGroup, display.contentCenterX, -20, display.contentWidth, 20 )
+  local topBorder = display.newRect(borderGroup, display.contentCenterX, -40, display.contentWidth, 20 )
   physics.addBody( topBorder, "static" )
   topBorder.isSensor = true
   topBorder.name = "topBorder"
@@ -85,6 +85,14 @@ m.start = function (scene)
   if settings.debug == false then
     borderGroup.alpha = 0
   end
+  local score = 0
+  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
+  scoreDisplay.alpha = 0
+  local function scoreUpdate( event )
+      score = score + 1
+      scoreDisplay.text = "Score: " .. tostring(score)
+  end
+  --game over screen
 
   --start clouds
   local cloud = display.newImageRect(settings.assetsDir.."cloud1.png", 128, 71)
@@ -104,6 +112,7 @@ m.start = function (scene)
           timer.cancel( scoreTimer )
           timer.cancel( leafTimer )
           timer.cancel( gameTimer )
+          Runtime:removeEventListener( "key", onKeyEvent )
         end
     end
   end
@@ -114,12 +123,15 @@ m.start = function (scene)
     leaf = display.newImageRect(obstacleDG, settings.assetsDir.."leaf1.png", 60, 40) --no idea what these parameters are lol
     leaf.x, leaf.y = math.random(display.actualContentWidth), display.actualContentHeight
     leaf.name = "obstacle"
-    physics.addBody( leaf, "static" )
+    physics.addBody( leaf, "static", {radius = 20} )
 
   end
 
   --start up game
   local function startGame(leaf)
+    Runtime:addEventListener( "key", onKeyEvent )
+    scoreDisplay.alpha = 1
+    scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
     leafTimer = timer.performWithDelay(500, spawnLeaf, -1)
     gameTimer = timer.performWithDelay(1, function (args)
       for i=1,obstacleDG.numChildren do
@@ -136,15 +148,7 @@ m.start = function (scene)
     end, -1 )
   end
   transition.to(cloud, {time=2000, y=-50, alpha=0, onComplete=startGame  })
-  --score
-     local score = 0
-     scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
-     local function scoreUpdate( event )
-         score = score + 1
-         scoreDisplay.text = "Score: " .. tostring(score)
-     end
 
-     scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
 
 end
 
