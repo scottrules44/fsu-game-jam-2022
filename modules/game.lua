@@ -101,8 +101,18 @@ m.start = function (scene)
     startMovingLeaf(leaf)
   end
 
-
   leafTimer = timer.performWithDelay(500, spawnLeaf, -1)
+
+    --score
+    local score = 0
+    scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX - 175, display.contentCenterY - 100, 100, 100)
+    local function scoreUpdate( event )
+        score = score + 1
+        scoreDisplay.text = "Score: " .. tostring(score)
+    end
+
+    local scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
+
 
 
 end
