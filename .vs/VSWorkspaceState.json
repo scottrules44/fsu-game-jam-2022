@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\assets",
+    "\\modules",
+    "\\scenes"
   ],
-  "SelectedNode": "\\C:\\Users\\Skyla\\Source\\Repos\\fsu-game-jam-2022",
+  "SelectedNode": "\\main.lua",
   "PreviewInSolutionExplorer": false
 }

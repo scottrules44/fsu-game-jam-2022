@@ -24,8 +24,9 @@ function scene:create( event )
     local sceneGroup = self.view
 
     --menu
-    local bg = display.newRect(sceneGroup,  display.contentCenterX, display.contentCenterY, display.actualContentWidth,display.actualContentHeight )
-    colors.setFillColor(bg, colors.sky)
+    local bg = display.newImageRect(sceneGroup, settings.assetsDir.."skybackground.png", display.actualContentWidth, display.actualContentHeight )
+  bg.x, bg.y = display.contentCenterX, display.contentCenterY
+  bg.xOrg, bg.yOrg = bg.x, bg.y
 
     local title = display.newText(sceneGroup, settings.title, display.contentCenterX, 40, native.systemFontBold, 40)
     colors.setFillColor(title, colors.title)
