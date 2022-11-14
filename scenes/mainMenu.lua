@@ -24,7 +24,7 @@ function scene:create( event )
     local sceneGroup = self.view
 
     --menu
-    local bg = display.newImageRect(sceneGroup, settings.assetsDir.."skybackground.png", display.actualContentWidth, display.actualContentHeight )
+    local bg = display.newImageRect(sceneGroup, settings.assetsDir.."skybackground.jpg", display.actualContentWidth, display.actualContentHeight )
   bg.x, bg.y = display.contentCenterX, display.contentCenterY
   bg.xOrg, bg.yOrg = bg.x, bg.y
 
@@ -52,11 +52,13 @@ function scene:create( event )
     colors.setFillColor(highScoreDisplay, colors.title)
     --how to play
     local howToPlay1 = display.newText(sceneGroup, "How to play:", display.contentCenterX, display.actualContentHeight-70, native.systemFontBold, 14)
-    local howToPlay2 = display.newText(sceneGroup, "Use left and right arrow key to control leaf and avoid leafs", display.contentCenterX, display.actualContentHeight-50, native.systemFontBold, 14)
+    local howToPlay2 = display.newText(sceneGroup, "Use left and right arrow key to control the water drop and avoid leafs", display.contentCenterX, display.actualContentHeight-50, native.systemFontBold, 12)
+    local howToPlay3 = display.newText(sceneGroup, "Or touch left or right side of the screen", display.contentCenterX, display.actualContentHeight-35, native.systemFontBold, 12)
     colors.setFillColor(howToPlay1, colors.title)
     colors.setFillColor(howToPlay2, colors.title)
+    colors.setFillColor(howToPlay3, colors.title)
     --about text
-    local about = display.newText(sceneGroup, "Created for DevLUP 2022 Game Jam (Scott, Sky, Jamie)", display.contentCenterX, display.actualContentHeight-20, native.systemFont, 12)
+    local about = display.newText(sceneGroup, "Created for DevLUP 2022 Game Jam (Scott, Sky, Jamie)", display.contentCenterX, display.actualContentHeight-10, native.systemFont, 12)
     colors.setFillColor(about, colors.title)
 
 end

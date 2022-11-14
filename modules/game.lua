@@ -29,7 +29,7 @@ local function startDropMove(type)
 
 
 end
-local function stopDropMove(type)
+local function stopDropMove()
   if(moveTimer)then
     timer.cancel( moveTimer )
     moveTimer = nil
@@ -45,7 +45,7 @@ local function onKeyEvent( event )
     end
     if ( event.phase == "up" ) then -- handle up keys only
       if(event.keyName == "left" or event.keyName == "right") then
-        stopDropMove(event.keyName)
+        stopDropMove()
         return true
       end
     end
@@ -53,6 +53,18 @@ local function onKeyEvent( event )
 end
 
 
+local function onBgTouch( event )
+    if ( event.phase == "began" ) then
+        if event.x > display.contentCenterX then
+          startDropMove("right")
+        elseif event.x <= display.contentCenterX then
+          startDropMove("left")
+        end
+    elseif ( event.phase == "ended" or event.phase == "cancelled") then
+        stopDropMove()
+    end
+    return true
+end
 
 
 
@@ -70,7 +82,7 @@ m.start = function (scene)
   local regBg = display.newGroup()
   scene:insert(regBg)
   scene:insert(obstacleDG)
-  local bg = display.newImageRect(regBg, settings.assetsDir.."skybackground.png", display.actualContentWidth, display.actualContentHeight )
+  local bg = display.newImageRect(regBg, settings.assetsDir.."skybackground.jpg", display.actualContentWidth, display.actualContentHeight )
   bg.x, bg.y = display.contentCenterX, display.contentCenterY
   bg.xOrg, bg.yOrg = bg.x, bg.y
 
@@ -89,8 +101,8 @@ m.start = function (scene)
     borderGroup.alpha = 0
   end
   local score = 0
-  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), display.contentCenterX + 35, 50, 100, 100)
-  scoreDisplay.alpha = 0
+  local scoreDisplay = display.newText(regBg, "Score: " .. tostring(score), 70, 10, system.nativeFontBold,15)
+  scoreDisplay.alpha = 1
   local function scoreUpdate( event )
       score = score + 1
       scoreDisplay.text = "Score: " .. tostring(score)
@@ -140,6 +152,7 @@ m.start = function (scene)
           timer.cancel( leafTimer )
           timer.cancel( gameTimer )
           Runtime:removeEventListener( "key", onKeyEvent )
+          bg:removeEventListener( "touch", onBgTouch )
         end
     end
   end
@@ -155,6 +168,8 @@ m.start = function (scene)
 
   --start up game
   function startGame()
+
+    bg:addEventListener( "touch", onBgTouch )
     Runtime:addEventListener( "key", onKeyEvent )
     scoreDisplay.alpha = 1
     scoreTimer = timer.performWithDelay(500, scoreUpdate, -1)
